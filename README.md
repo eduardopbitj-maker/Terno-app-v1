@@ -1,6 +1,38 @@
 # Guarda-Roupa — App Android (Kotlin + Jetpack Compose + Room)
 
+## ⚠️ Importante: gerar o `gradle-wrapper.jar` antes do primeiro build em CI
+
+Este projeto já inclui `gradlew`, `gradlew.bat` e `gradle/wrapper/gradle-wrapper.properties`.
+Falta apenas **um arquivo binário**, `gradle/wrapper/gradle-wrapper.jar` — ele não pôde ser
+gerado neste ambiente porque não há acesso à internet nem a um compilador Java (`javac`) aqui,
+só um interpretador (`java`). Sem esse `.jar`, qualquer sistema que rode `./gradlew` direto
+(Codemagic, GitHub Actions, etc.) vai falhar com `./gradlew: No such file or directory` ou
+erro parecido.
+
+**A forma mais simples de resolver (escolha uma):**
+
+1. **Abrindo no Android Studio** (mais fácil): abra a pasta do projeto normalmente. O Android
+   Studio detecta o wrapper incompleto e oferece para recriá-lo sozinho ("Gradle Sync" já
+   resolve isso). Depois é só commitar o arquivo `gradle/wrapper/gradle-wrapper.jar` que ele
+   gerar, junto com o resto do projeto, antes de rodar no serviço de CI.
+
+2. **Pelo terminal, se você tiver o Gradle instalado** (`brew install gradle` no Mac):
+   dentro da pasta do projeto, rode:
+   ```
+   gradle wrapper --gradle-version 8.7 --distribution-type bin
+   ```
+   Isso recria `gradlew`, `gradlew.bat` e `gradle/wrapper/gradle-wrapper.jar` corretamente.
+
+3. **Copiando de outro projeto Android que você já tenha**: o arquivo
+   `gradle/wrapper/gradle-wrapper.jar` é genérico (não muda entre projetos) — você pode copiar
+   esse único arquivo de qualquer outro projeto Gradle/Android seu para dentro de
+   `gradle/wrapper/` aqui, sem precisar mexer em mais nada.
+
+Depois de gerar/copiar esse arquivo, é só commitar e enviar de novo para o Codemagic (ou
+serviço equivalente) — o build deve seguir normalmente a partir daí.
+
 ## Como compilar
+
 
 1. Instale o **Android Studio** (versão Koala/2024.1 ou mais recente).
 2. Abra a pasta `RoupasApp` como projeto ("Open" → selecione esta pasta).
